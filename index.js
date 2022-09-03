@@ -18,7 +18,26 @@ process.on("unhandledRejection", (error) => {
     });
   });
 
-// Save a user in the .json file validate the body and check if all the required properties are present in the body.
+//Update a existing user  
+app.patch("/user/update/:id", (req, res) => {
+    const allUsers = fs.readFileSync("UserData/userData.json", "utf-8");
+    const user = JSON.parse(allUsers);
+    const id = Number(req.params.id);
+    const updatedUsers = req.body;
+      const index = user.findIndex(user => user.id === id);
+    
+    if (index !== -1) {
+      const result = user[index] = { ...user[index], ...updatedUsers };
+      fs.writeFileSync("UserData/userData.json", JSON.stringify(user));
+      res.status(200).send(result);
+    }
+    
+    else {
+      res.status(404).send("User not found");
+    }
+  });
+
+// Save a user in userData.json
 app.post("/user/save", (req, res) => {
     const allUsers = fs.readFileSync("UserData/userData.json", "utf-8");
     const user = JSON.parse(allUsers);
