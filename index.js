@@ -18,6 +18,27 @@ process.on("unhandledRejection", (error) => {
     });
   });
 
+// Update multiple users 
+app.patch("/user/bulk-update", (req, res) => {
+    const allUsers = fs.readFileSync("UserData/userData.json", "utf-8");
+    const user = JSON.parse(allUsers);
+    const ids = req.body.ids;
+    const updatedData = req.body.data;
+   if(ids && updatedData){
+    const updatedUser = user.map(user => {
+      if (ids.includes(user.id)) {
+        return { ...user, ...updatedData };
+      } else {
+        return user;
+      }
+    })
+    fs.writeFileSync("UserData/userData.json", JSON.stringify(updatedUser));
+    res.status(200).send(updatedUser)
+   }else{
+      res.status(400).send("Bad Request - Missing some properties");
+   }
+  });
+
 //Update a existing user  
 app.patch("/user/update/:id", (req, res) => {
     const allUsers = fs.readFileSync("UserData/userData.json", "utf-8");
