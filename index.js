@@ -18,6 +18,18 @@ process.on("unhandledRejection", (error) => {
     });
   });
 
+// get all userData 
+app.get("/user/all", (req, res) => {
+    const allUsers = fs.readFileSync("UserData/userData.json", "utf-8");
+    const user = JSON.parse(allUsers);
+    const userLimit = req.query.userLimit;
+    if (userLimit) {
+      res.send(user.slice(0, userLimit));
+    } else {
+      res.send(user);
+    }
+  });
+
 // get random userData
 app.get("/user/random",  (req, res) => {
     const allUsers = fs.readFileSync('UserData/userData.json', 'utf8');
