@@ -18,6 +18,23 @@ process.on("unhandledRejection", (error) => {
     });
   });
 
+// Delete a userData
+app.delete("/user/delete", (req, res) => {
+    const allUsers = fs.readFileSync("UserData/userData.json", "utf-8");
+    const user = JSON.parse(allUsers);
+    const id = Number(req.body.id);
+    const index = user.findIndex(user => user.id === id);
+    if(!index){
+      if (index !== -1) {
+        user.splice(index, 1);
+        fs.writeFileSync("UserData/userData.json", JSON.stringify(user));
+        res.status(200).send(user);
+      }
+    }else{
+      res.status(404).send("User not found");
+    }
+  });
+
 // Update multiple users 
 app.patch("/user/bulk-update", (req, res) => {
     const allUsers = fs.readFileSync("UserData/userData.json", "utf-8");
