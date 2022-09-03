@@ -18,6 +18,20 @@ process.on("unhandledRejection", (error) => {
     });
   });
 
+// Save a user in the .json file validate the body and check if all the required properties are present in the body.
+app.post("/user/save", (req, res) => {
+    const allUsers = fs.readFileSync("UserData/userData.json", "utf-8");
+    const user = JSON.parse(allUsers);
+    const newUser = req.body;
+    if (newUser.id && newUser.name && newUser.contact && newUser.address && newUser.photoUrl && newUser.gender) {
+      user.push(newUser);
+      fs.writeFileSync("UserData/userData.json", JSON.stringify(user));
+      res.send(user);
+    } else {
+      res.status(400).send("Bad Request - Missing some properties");
+    }
+  }),
+
 // get all userData 
 app.get("/user/all", (req, res) => {
     const allUsers = fs.readFileSync("UserData/userData.json", "utf-8");
