@@ -3,7 +3,7 @@ const cors = require("cors");
 const errorHandler = require('./MiddleWare/errorHandler');
 const port = process.env.PORT || 5000;
 const fs = require("fs");
-const path = require("path")
+const path = require("path");
 const app = express();
 
 app.use(cors());
@@ -19,18 +19,20 @@ process.on("unhandledRejection", (error) => {
   });
 
 // Delete a userData
-app.delete("/user/delete", (req, res) => {
+app.delete("/user/delete/:id", (req, res) => {
     const allUsers = fs.readFileSync("UserData/userData.json", "utf-8");
     const user = JSON.parse(allUsers);
-    const id = Number(req.body.id);
+    const id = Number(req.params.id);
+    
     const index = user.findIndex(user => user.id === id);
-    if(!index){
+    
       if (index !== -1) {
         user.splice(index, 1);
+        
         fs.writeFileSync("UserData/userData.json", JSON.stringify(user));
         res.status(200).send(user);
       }
-    }else{
+    else{
       res.status(404).send("User not found");
     }
   });
