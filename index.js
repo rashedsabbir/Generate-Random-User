@@ -18,6 +18,15 @@ process.on("unhandledRejection", (error) => {
     });
   });
 
+// get random userData
+app.get("/user/random",  (req, res) => {
+    const allUsers = fs.readFileSync('UserData/userData.json', 'utf8');
+    const randomUser = JSON.parse(allUsers)[Math.floor(Math.random() * JSON.parse(allUsers).length)];
+    res.send(randomUser);
+  });
+
+
+
 app.get("/", (req, res) => {
     res.send("Random user server is running successfully");
   });
